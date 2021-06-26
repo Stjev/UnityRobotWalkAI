@@ -10,13 +10,12 @@ public class CameraTracking : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.distance = -2;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(target.position.x - distance, target.position.y, target.position.z - distance);
+        transform.position = new Vector3(target.position.x - distance, transform.position.y, target.position.z - distance);
     }
 }
-
-// https://blog.unity.com/technology/ml-agents-v20-release-now-supports-training-complex-cooperative-behaviors

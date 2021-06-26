@@ -1,7 +1,4 @@
-﻿-- RANDOMNESS --
+﻿mlagents-learn config\robotwalk_config.yaml --run-id=RobotWalk<level>
 
-- Random joint positions on spawn.
 
--- REWARDS --
-
-- 
+---------------------------------------------------------

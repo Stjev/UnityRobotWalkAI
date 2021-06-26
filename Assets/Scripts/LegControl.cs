@@ -34,57 +34,57 @@ namespace Assets.Scripts
             this.blShoulder = blShoulder;
             this.blKnee = blKnee;
         }
-        private void MoveLeg(ArticulationBody body, float force)
+        private void MoveLeg(ArticulationBody body, float target)
         {
             ArticulationDrive drive = body.xDrive;
-            drive.target = Mathf.Clamp(drive.target + force, drive.lowerLimit, drive.upperLimit);
+            drive.target = Mathf.Clamp(target, drive.lowerLimit, drive.upperLimit);
             body.xDrive = drive;
         }
 
         /**
          * Reset the positions of all the legs to a new random position
          */
-        public void ResetLegs()
+        public void ResetLegs(bool random=false)
         {
             foreach(ArticulationBody body in new List<ArticulationBody> { this.frShoulder, this.frKnee, this.brShoulder, this.brKnee, this.flShoulder, this.flKnee, this.blShoulder, this.blKnee })
             {
                 ArticulationDrive drive = body.xDrive;
-                drive.target = r.Next((int)drive.lowerLimit, (int)drive.upperLimit);
+                drive.target = random? r.Next((int)drive.lowerLimit, (int)drive.upperLimit) : 0;
                 body.xDrive = drive;
             }
         }
 
-        public void MoveFrontRightShoulder(float force)
+        public void MoveFrontRightShoulder(float target)
         {
-            this.MoveLeg(this.frShoulder, force);
+            this.MoveLeg(this.frShoulder, target);
         }
-        public void MoveFrontRightKnee(float force)
+        public void MoveFrontRightKnee(float target)
         {
-            this.MoveLeg(this.frKnee, force);
+            this.MoveLeg(this.frKnee, target);
         }
-        public void MoveBackRightShoulder(float force)
+        public void MoveBackRightShoulder(float target)
         {
-            this.MoveLeg(this.brShoulder, force);
+            this.MoveLeg(this.brShoulder, target);
         }
-        public void MoveBackRightKnee(float force)
+        public void MoveBackRightKnee(float target)
         {
-            this.MoveLeg(this.brKnee, force);
+            this.MoveLeg(this.brKnee, target);
         }
-        public void MoveFrontLeftShoulder(float force)
+        public void MoveFrontLeftShoulder(float target)
         {
-            this.MoveLeg(this.flShoulder, -force);
+            this.MoveLeg(this.flShoulder, -target);
         }
-        public void MoveFrontLeftKnee(float force)
+        public void MoveFrontLeftKnee(float target)
         {
-            this.MoveLeg(this.flKnee, -force);
+            this.MoveLeg(this.flKnee, -target);
         }
-        public void MoveBackLeftShoulder(float force)
+        public void MoveBackLeftShoulder(float target)
         {
-            this.MoveLeg(this.blShoulder, -force);
+            this.MoveLeg(this.blShoulder, -target);
         }
-        public void MoveBackLeftKnee(float force)
+        public void MoveBackLeftKnee(float target)
         {
-            this.MoveLeg(this.blKnee, -force);
+            this.MoveLeg(this.blKnee, -target);
         }
     }
 }
