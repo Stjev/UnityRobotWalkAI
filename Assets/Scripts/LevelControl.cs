@@ -22,18 +22,22 @@ namespace Assets.Scripts
             /**
              * This code should execute at the start of an episode
              */
-            public static void OnEpisodeBegin()
+            public static void OnEpisodeBegin(Renderer bodyRenderer)
             {
-                // Does nothing  
+                // Set the color to red before the first goal is collected
+                bodyRenderer.material.SetColor("_Color", Color.red);
             }
 
             /**
              * This code should execute when the Agents reached the goal
              */
-            public static void OnGoalReached(Transform Target, Transform Spawnpoint)
+            public static void OnGoalReached(Transform Target, Transform Spawnpoint, Renderer bodyRenderer, Color hideColor)
             {
                 // Put the goal in a new random location
                 Target.position = Level1.RandomGoal(Spawnpoint.position);
+
+                // Set the color to red before the first goal is collected
+                bodyRenderer.material.SetColor("_Color", hideColor);
             }
 
             /**

@@ -11,6 +11,8 @@ using Unity.MLAgents.Actuators;
 public class Player : Agent, IPlayer
 {
     private static readonly int LEVEL = 1;
+    private Color hideColor;
+    private Renderer bodyRenderer;
 
     /*
      * Get the target position
@@ -47,13 +49,15 @@ public class Player : Agent, IPlayer
     private Vector3 lastPos;
     private long timeSinceLastPos;
 
-    private long totalLooks, looksAtTarget;
-
     // Start is called before the first frame update
     void Start()
     {
         // Execute level specific code
         this.OnStartLevelControl();
+
+        // Get the initial color of the body
+        this.bodyRenderer = GetComponent<Renderer>();
+        this.hideColor = this.bodyRenderer.material.GetColor("_Color");
 
         // Save the target location
         this.originalTargetPos = Target.position;
@@ -98,10 +102,6 @@ public class Player : Agent, IPlayer
     public override void OnEpisodeBegin()
     {
         this.OnEpisodeBeginLevelControl();
-
-        // Reset how frequent the Agent looks at the target
-        this.totalLooks = 0;
-        this.looksAtTarget = 0;
 
         // Reset the legs of the Agent
         this.LegControl.ResetLegs();
@@ -150,7 +150,9 @@ public class Player : Agent, IPlayer
         sensor.AddObservation(raySensor.GetRayDistances()); // 15
     }
 
-    public int MOVEMENTTIME = 25000;
+    private static readonly int MOVEMENTTIME = 25000;
+    private static readonly float MIN_MOVEDISTANCE = 0.05f;
+
 
     /**
      * This method checks if the agent has moved for a certain amount of time
@@ -159,14 +161,15 @@ public class Player : Agent, IPlayer
     {
         this.timeSinceLastPos += 1;
 
+        float distanceMoved = Vector3.Distance(this.lastPos, this.transform.position);
+
         // The Agent should move to accomplish its goal, this will make sure the Agent resets when
         // no movement was detected for a while
-        if (Vector3.Distance(this.lastPos, this.transform.position) < 0.1 &&
-            this.timeSinceLastPos > this.MOVEMENTTIME)
+        if (distanceMoved < MIN_MOVEDISTANCE && this.timeSinceLastPos > MOVEMENTTIME)
         {
             Die();
         }
-        else if (Vector3.Distance(this.lastPos, this.transform.position) > 0.5)
+        else if (distanceMoved > MIN_MOVEDISTANCE)
         {
             this.lastPos = this.transform.position;
             this.timeSinceLastPos = 0;
@@ -187,19 +190,21 @@ public class Player : Agent, IPlayer
 
         // Check if the agent got stuck (or just hasn't moved for quite some time)
         this.CheckIfStuck();
-        this.CountLookingAtTarget();
 
         // If the Agent reached the target
         if (Vector3.Distance(this.transform.position, this.Target.position) < 1.0f)
         {
-            // Because we want to divide two longs to a float we need to define the precision
-            // by doing *1000 and after division /1000.
-            float discountFactor = 1 - (((this.looksAtTarget * 1000) / this.totalLooks) / 1000.0f);
+            // The discount factor is the angle the player looked away from the Target 
+            // squared. We square because we don't care if the Agent almost looked at the Target
+            // but rather if the agent looked far from the target
+            float discountFactor = (float) (Math.Pow(this.GetAngleTargetAgent(), 2) / Math.Pow(180, 2));
 
-            SetReward(1.0f - discountFactor * 0.75f);
-
-            this.totalLooks = 0;
-            this.looksAtTarget = 0;
+            // The calculation of the reward:
+            //  1 + (angle^2/180^2) * 0.9
+            // Changing the last constant multiplication value changes
+            // the weight of how much we want the agent to look at the goal
+            // (higher = We wint him to look at the goal more)
+            SetReward(1.0f - discountFactor * 0.9f);
 
             this.OnGoalReachedLevelControl();
         }
@@ -214,18 +219,11 @@ public class Player : Agent, IPlayer
      * Calculates the angle between where the player is looking and where
      * the target is
      */
-    public void CountLookingAtTarget()
+    public float GetAngleTargetAgent()
     {
         // Calculate the angle between the Agent and the Target
         Vector3 targetDir = Target.position - transform.position;
-        float angle = Vector3.Angle(targetDir, transform.up);
-
-        this.totalLooks += 1;
-
-        if (angle < 90)
-        {
-            this.looksAtTarget += 1;
-        };
+        return Vector3.Angle(new Vector3(targetDir.x, 0, targetDir.z), new Vector3(transform.up.x, 0, transform.up.z));
     }
 
     /**
@@ -266,7 +264,7 @@ public class Player : Agent, IPlayer
         switch (LEVEL)
         {
             case 1:
-                LevelControl.Level1.OnEpisodeBegin();
+                LevelControl.Level1.OnEpisodeBegin(this.bodyRenderer);
                 break;
             case 2:
                 LevelControl.Level2.OnEpisodeBegin(Target, this.originalTargetPos);
@@ -279,7 +277,7 @@ public class Player : Agent, IPlayer
         switch (LEVEL)
         {
             case 1:
-                LevelControl.Level1.OnGoalReached(Target, Spawnpoint);
+                LevelControl.Level1.OnGoalReached(Target, Spawnpoint, this.bodyRenderer, this.hideColor);
                 break;
             case 2:
                 LevelControl.Level2.OnGoalReached(Target, Spawnpoint, this.originalTargetPos);

@@ -1,0 +1,65 @@
+{
+    "RobotWalk": {
+        "checkpoints": [
+            {
+                "steps": 25499964,
+                "file_path": "results\\RobotWalk\\RobotWalk\\RobotWalk-25499964.onnx",
+                "reward": 536.3223756154379,
+                "creation_time": 1624784020.613903,
+                "auxillary_file_paths": [
+                    "results\\RobotWalk\\RobotWalk\\RobotWalk-25499964.pt"
+                ]
+            },
+            {
+                "steps": 25999009,
+                "file_path": "results\\RobotWalk\\RobotWalk\\RobotWalk-25999009.onnx",
+                "reward": 1000.1146321445704,
+                "creation_time": 1624784916.88758,
+                "auxillary_file_paths": [
+                    "results\\RobotWalk\\RobotWalk\\RobotWalk-25999009.pt"
+                ]
+            },
+            {
+                "steps": 26499940,
+                "file_path": "results\\RobotWalk\\RobotWalk\\RobotWalk-26499940.onnx",
+                "reward": 897.5236625671387,
+                "creation_time": 1624785845.2101302,
+                "auxillary_file_paths": [
+                    "results\\RobotWalk\\RobotWalk\\RobotWalk-26499940.pt"
+                ]
+            },
+            {
+                "steps": 26999378,
+                "file_path": "results\\RobotWalk\\RobotWalk\\RobotWalk-26999378.onnx",
+                "reward": 2427.6533393859863,
+                "creation_time": 1624786756.5708504,
+                "auxillary_file_paths": [
+                    "results\\RobotWalk\\RobotWalk\\RobotWalk-26999378.pt"
+                ]
+            },
+            {
+                "steps": 27377781,
+                "file_path": "results\\RobotWalk\\RobotWalk\\RobotWalk-27377781.onnx",
+                "reward": 1956.5194803873699,
+                "creation_time": 1624787488.0191307,
+                "auxillary_file_paths": [
+                    "results\\RobotWalk\\RobotWalk\\RobotWalk-27377781.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 27377781,
+            "file_path": "results\\RobotWalk\\RobotWalk.onnx",
+            "reward": 1956.5194803873699,
+            "creation_time": 1624787488.0191307,
+            "auxillary_file_paths": [
+                "results\\RobotWalk\\RobotWalk\\RobotWalk-27377781.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.27.0",
+        "torch_version": "1.9.0+cu111"
+    }
+}
